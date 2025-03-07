@@ -3,6 +3,7 @@ package hieu.springbootecommerceultimate.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hieu.springbootecommerceultimate.entity.RoleEntity;
 import hieu.springbootecommerceultimate.entity.UserEntity;
+import hieu.springbootecommerceultimate.exception.UserAlreadyExistException;
 import hieu.springbootecommerceultimate.exception.UserNotFoundException;
 import hieu.springbootecommerceultimate.repository.RoleRepository;
 import hieu.springbootecommerceultimate.repository.UserRepository;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,6 +34,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse createUser(CreateUserRequest request) {
+        Optional<UserEntity> user = userRepository.findByEmail(request.getEmail());
+        if (user.isPresent()) {
+            throw new UserAlreadyExistException("User already exist");
+        }
+
         UserEntity entity = userRepository.save(convertRequestToEntity(request));
         return convertEntityToResponse(entity);
     }
