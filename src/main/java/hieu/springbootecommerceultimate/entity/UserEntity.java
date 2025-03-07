@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import javax.management.relation.Role;
 import java.util.List;
 
 @AllArgsConstructor
@@ -15,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @SuperBuilder
-@Entity(name = "roles")
+@Entity(name = "users")
 public class UserEntity extends AbstractEntity{
 
     private String email;
