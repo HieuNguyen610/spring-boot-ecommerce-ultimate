@@ -72,4 +72,13 @@ public class UserController {
                 .build());
     }
 
+    @PutMapping("/update")
+    public ResponseEntity<ApiResponse> updateUser(@RequestBody UserUpdateRequest request) {
+        UserResponse response = userService.updateUser(request);
+        return ResponseEntity.ok(ApiResponse.builder()
+                        .message("Update user")
+                        .data(response)
+                .build());
+    }
+
 }

@@ -118,6 +118,11 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+    @Override
+    public UserResponse updateUser(UserUpdateRequest request) {
+        return null;
+    }
+
     private UserEntity findUserByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(()-> new UserNotFoundException("User email = " + email + " not found"));
     }

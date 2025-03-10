@@ -18,4 +18,6 @@ public interface UserService {
     ForgetPasswordResponse forgetPassword(String email);
 
     ResetPasswordResponse resetPassword(String token);
+
+    UserResponse updateUser(UserUpdateRequest request);
 }
