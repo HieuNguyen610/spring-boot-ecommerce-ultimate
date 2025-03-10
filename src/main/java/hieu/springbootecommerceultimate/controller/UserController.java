@@ -3,9 +3,11 @@ package hieu.springbootecommerceultimate.controller;
 import hieu.springbootecommerceultimate.request.CreateUserRequest;
 import hieu.springbootecommerceultimate.response.*;
 import hieu.springbootecommerceultimate.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import hieu.springbootecommerceultimate.request.UpdateUserRequest;
 
 @RequiredArgsConstructor
 @RequestMapping("/users")
@@ -73,7 +75,7 @@ public class UserController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<ApiResponse> updateUser(@RequestBody UserUpdateRequest request) {
+    public ResponseEntity<ApiResponse> updateUser(@Valid @RequestBody UpdateUserRequest request) {
         UserResponse response = userService.updateUser(request);
         return ResponseEntity.ok(ApiResponse.builder()
                         .message("Update user")

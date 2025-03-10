@@ -8,6 +8,7 @@ import hieu.springbootecommerceultimate.exception.UserNotFoundException;
 import hieu.springbootecommerceultimate.repository.RoleRepository;
 import hieu.springbootecommerceultimate.repository.UserRepository;
 import hieu.springbootecommerceultimate.request.CreateUserRequest;
+import hieu.springbootecommerceultimate.request.UpdateUserRequest;
 import hieu.springbootecommerceultimate.response.ForgetPasswordResponse;
 import hieu.springbootecommerceultimate.response.ResetPasswordResponse;
 import hieu.springbootecommerceultimate.response.UserPagingResponse;
@@ -119,8 +120,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse updateUser(UserUpdateRequest request) {
-        return null;
+    public UserResponse updateUser(UpdateUserRequest request) {
+        if (request == null) {
+            throw new IllegalArgumentException("Request cannot be null");
+        }
+        UserEntity entity = findUserById(request.getId());
+
+        entity.setEmail(request.getEmail());
+        entity.setPassword(passwordEncoder.encode(request.getPassword()));
+        entity.setPhoto(request.getPhoto());
+        entity.setEnabled(Boolean.TRUE);
+        entity.setFirstName(request.getFirstName());
+        entity.setLastName(request.getLastName());
+        entity.setUpdatedAt(LocalDateTime.now());
+
+        List<RoleEntity> roles = request.getRoles().stream().map(roleId -> roleRepository.findById(roleId).get()).toList();
+        entity.setRoles(roles);
+        UserEntity updatedUser = userRepository.save(entity);
+
+        return convertEntityToResponse(updatedUser);
     }
 
     private UserEntity findUserByEmail(String email) {

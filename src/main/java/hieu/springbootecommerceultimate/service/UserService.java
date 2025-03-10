@@ -1,6 +1,7 @@
 package hieu.springbootecommerceultimate.service;
 
 import hieu.springbootecommerceultimate.request.CreateUserRequest;
+import hieu.springbootecommerceultimate.request.UpdateUserRequest;
 import hieu.springbootecommerceultimate.response.ForgetPasswordResponse;
 import hieu.springbootecommerceultimate.response.ResetPasswordResponse;
 import hieu.springbootecommerceultimate.response.UserPagingResponse;
@@ -19,5 +20,5 @@ public interface UserService {
 
     ResetPasswordResponse resetPassword(String token);
 
-    UserResponse updateUser(UserUpdateRequest request);
+    UserResponse updateUser(UpdateUserRequest request);
 }
