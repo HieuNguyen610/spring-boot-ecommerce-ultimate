@@ -10,7 +10,9 @@ import hieu.springbootecommerceultimate.repository.UserRepository;
 import hieu.springbootecommerceultimate.request.CreateUserRequest;
 import hieu.springbootecommerceultimate.response.UserPagingResponse;
 import hieu.springbootecommerceultimate.response.UserResponse;
+import hieu.springbootecommerceultimate.service.EmailService;
 import hieu.springbootecommerceultimate.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cglib.core.Local;
@@ -31,8 +33,10 @@ public class UserServiceImpl implements UserService {
     private final ObjectMapper objectMapper;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+//    private final EmailService emailService;
 
     @Override
+    @Transactional
     public UserResponse createUser(CreateUserRequest request) {
         Optional<UserEntity> user = userRepository.findByEmail(request.getEmail());
         if (user.isPresent()) {
@@ -78,7 +82,7 @@ public class UserServiceImpl implements UserService {
         entity.setEmail(request.getEmail());
         entity.setPassword(passwordEncoder.encode(request.getPassword()));
         entity.setPhoto(request.getPhoto());
-        entity.setEnabled(request.isEnabled());
+        entity.setEnabled(Boolean.FALSE);
         entity.setFirstName(request.getFirstName());
         entity.setLastName(request.getLastName());
         entity.setCreatedAt(LocalDateTime.now());

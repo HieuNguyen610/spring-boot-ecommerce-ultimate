@@ -8,6 +8,7 @@ import hieu.springbootecommerceultimate.response.RolePagingResponse;
 import hieu.springbootecommerceultimate.response.RoleResponse;
 import hieu.springbootecommerceultimate.service.RoleService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import hieu.springbootecommerceultimate.exception.RoleNotExistException;
@@ -16,6 +17,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j(topic = "ROLE-SERVICE")
 public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepository;

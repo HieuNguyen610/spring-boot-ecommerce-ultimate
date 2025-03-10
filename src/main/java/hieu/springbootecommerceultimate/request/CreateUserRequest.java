@@ -17,7 +17,6 @@ public class CreateUserRequest implements Serializable {
     private String lastName;
     private String password;
     private List<Long> roles;
-    private boolean enabled;
     private String photo;
 
 }
