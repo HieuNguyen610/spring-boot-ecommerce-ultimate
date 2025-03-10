@@ -30,4 +30,5 @@ public class UserEntity extends AbstractEntity{
     private List<RoleEntity> roles;
     private boolean enabled;
     private String photo;
+    private String token;
 }

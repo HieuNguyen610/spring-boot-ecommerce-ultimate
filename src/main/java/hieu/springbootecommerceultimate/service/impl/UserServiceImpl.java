@@ -8,6 +8,8 @@ import hieu.springbootecommerceultimate.exception.UserNotFoundException;
 import hieu.springbootecommerceultimate.repository.RoleRepository;
 import hieu.springbootecommerceultimate.repository.UserRepository;
 import hieu.springbootecommerceultimate.request.CreateUserRequest;
+import hieu.springbootecommerceultimate.response.ForgetPasswordResponse;
+import hieu.springbootecommerceultimate.response.ResetPasswordResponse;
 import hieu.springbootecommerceultimate.response.UserPagingResponse;
 import hieu.springbootecommerceultimate.response.UserResponse;
 import hieu.springbootecommerceultimate.service.EmailService;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -73,6 +76,52 @@ public class UserServiceImpl implements UserService {
         return response;
     }
 
+    @Override
+    public UserResponse activeUser(Long userId) {
+        UserEntity userEntity = findUserById(userId);
+        if (userEntity.isEnabled()) {
+            throw new UserAlreadyExistException("User already activated");
+        }
+        userEntity.setEnabled(Boolean.TRUE);
+        userEntity.setUpdatedAt(LocalDateTime.now());
+
+        UserEntity savedUser = userRepository.save(userEntity);
+        return convertEntityToResponse(savedUser);
+    }
+
+    @Override
+    public ForgetPasswordResponse forgetPassword(String email) {
+        UserEntity userEntity = findUserByEmail(email);
+
+        // Generate new random password and save it to database
+        String token = generateToken();
+        userEntity.setToken(token);
+        userRepository.save(userEntity);
+
+        return ForgetPasswordResponse.builder()
+                .resetToken(token)
+                .email(email)
+                .build();
+    }
+
+    @Override
+    public ResetPasswordResponse resetPassword(String token) {
+        UserEntity userEntity = userRepository.findByToken(token).orElseThrow(() -> new UserNotFoundException("User token not found"));
+        String defaultPassword = "123a123@A";
+        userEntity.setPassword(passwordEncoder.encode(defaultPassword));
+        userEntity.setToken(null);
+        userEntity.setUpdatedAt(LocalDateTime.now());
+        userRepository.save(userEntity);
+        return ResetPasswordResponse.builder()
+                .email(userEntity.getEmail())
+                .password(userEntity.getPassword())
+                .build();
+    }
+
+    private UserEntity findUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(()-> new UserNotFoundException("User email = " + email + " not found"));
+    }
+
     private UserEntity findUserById(Long userId) {
         return userRepository.findById(userId).orElseThrow(()-> new UserNotFoundException("User id = " + userId + " not found"));
     }
@@ -98,5 +147,12 @@ public class UserServiceImpl implements UserService {
 
     private List<UserResponse> convertEntitiesToResponses(List<UserEntity> entities) {
         return entities.stream().map(this::convertEntityToResponse).collect(Collectors.toList());
+    }
+
+    private String generateToken() {
+        StringBuilder token = new StringBuilder();
+
+        return token.append(UUID.randomUUID().toString())
+                .append(UUID.randomUUID().toString()).toString();
     }
 }

@@ -18,4 +18,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     List<UserEntity> findByEmail(String email, int limit, int offset);
 
     Optional<UserEntity> findByEmail(String email);
+
+    Optional<UserEntity> findByToken(String token);
 }

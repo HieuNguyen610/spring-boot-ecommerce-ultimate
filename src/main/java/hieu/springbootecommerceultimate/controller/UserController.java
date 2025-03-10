@@ -1,9 +1,7 @@
 package hieu.springbootecommerceultimate.controller;
 
 import hieu.springbootecommerceultimate.request.CreateUserRequest;
-import hieu.springbootecommerceultimate.response.ApiResponse;
-import hieu.springbootecommerceultimate.response.UserPagingResponse;
-import hieu.springbootecommerceultimate.response.UserResponse;
+import hieu.springbootecommerceultimate.response.*;
 import hieu.springbootecommerceultimate.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +41,33 @@ public class UserController {
         UserPagingResponse response = userService.getUsers(email, page, size);
         return ResponseEntity.ok(ApiResponse.builder()
                         .message("Search user")
+                        .data(response)
+                .build());
+    }
+
+    @PostMapping("/active")
+    public ResponseEntity<ApiResponse> activeUser(@RequestParam Long userId) {
+        UserResponse response = userService.activeUser(userId);
+        return ResponseEntity.ok(ApiResponse.builder()
+                        .message("Active user id = " + userId)
+                        .data(response)
+                .build());
+    }
+
+    @PostMapping("/forget-password")
+    public ResponseEntity<ApiResponse> forgetPassword(@RequestParam String email) {
+        ForgetPasswordResponse response = userService.forgetPassword(email);
+        return ResponseEntity.ok(ApiResponse.builder()
+                        .message("Forget password")
+                        .data(response)
+                .build());
+    }
+
+    @GetMapping("/reset-password")
+    public ResponseEntity<ApiResponse> resetPassword(@RequestParam String token) {
+        ResetPasswordResponse response = userService.resetPassword(token);
+        return ResponseEntity.ok(ApiResponse.builder()
+                        .message("Reset password")
                         .data(response)
                 .build());
     }
