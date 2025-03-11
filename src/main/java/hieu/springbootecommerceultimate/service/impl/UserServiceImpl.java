@@ -120,11 +120,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserResponse updateUser(UpdateUserRequest request) {
-        if (request == null) {
+        if (request == null || request.getEmail() == null) {
             throw new IllegalArgumentException("Request cannot be null");
         }
-        UserEntity entity = findUserById(request.getId());
+        UserEntity entity = findUserByEmail(request.getEmail());
 
         entity.setEmail(request.getEmail());
         entity.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -134,10 +135,11 @@ public class UserServiceImpl implements UserService {
         entity.setLastName(request.getLastName());
         entity.setUpdatedAt(LocalDateTime.now());
 
-        List<RoleEntity> roles = request.getRoles().stream().map(roleId -> roleRepository.findById(roleId).get()).toList();
-        entity.setRoles(roles);
-        UserEntity updatedUser = userRepository.save(entity);
+//        List<RoleEntity> roles = request.getRoles().stream().map(roleId -> roleRepository.findById(roleId)
+//                .orElseThrow(() -> new IllegalArgumentException("No such role exist"))).toList();
+//        entity.setRoles(roles);
 
+        UserEntity updatedUser = userRepository.save(entity);
         return convertEntityToResponse(updatedUser);
     }
 
